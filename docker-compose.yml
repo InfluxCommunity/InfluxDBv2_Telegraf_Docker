@@ -1,0 +1,30 @@
+version: '3'
+services:
+  influxdb:
+    image: quay.io/influxdb/influxdb:v2.0.3
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdbv2:/.influxdbv2
+    ports:
+      - "8086:8086"
+  influxdb_cli:
+    links:
+      - influxdb
+    image: quay.io/influxdb/influxdb:v2.0.3
+    entrypoint: influx setup --bucket test -t test -o test --username=test --password=passwordpasswordpassword --host=http://influxdb:8086 -f
+    restart: on-failure:10
+    depends_on:
+      - influxdb
+  telegraf:
+    image: telegraf
+    links:
+      - influxdb
+    volumes:
+      # Mount for telegraf config
+      - ./telegraf/test1.conf:/etc/telegraf/telegraf.conf
+      # # Mount for Docker API access
+      # - /Users/lizzo/telegraf.conf:/var/lib/influxdb
+    depends_on:
+      - influxdb_cli
+volumes:
+  influxdbv2:
