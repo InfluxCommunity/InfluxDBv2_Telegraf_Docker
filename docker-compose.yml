@@ -1,7 +1,7 @@
 version: '3'
 services:
   influxdb:
-    image: influxdb:2.0.7
+    image: influxdb:2.1-alpine
     volumes:
       # Mount for influxdb data directory and configuration
       - /Users/anaisdotis-georgiou/temp/influxdbv2:/var/lib/influxdb2:rw
@@ -32,7 +32,7 @@ services:
     depends_on:
       - influxdb
   telegraf:
-    image: telegraf
+    image: telegraf:1.22-alpine
     links:
       - influxdb
     volumes:
